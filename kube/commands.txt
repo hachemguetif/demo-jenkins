@@ -1,2 +1,4 @@
+minikube start --kubernetes-version=v1.23.9 --driver=virtualbox
 kubectl describe secret $(kubectl describe serviceaccount jenkins-admin --namespace=devops | grep Token | awk '{print $2}') --namespace=devops
-kubectl exec -it <pod_name> cat  /var/jenkins_home/secrets/initialAdminPassword -n devops
+kubectl exec -it jenkins-76b678874d-h8jtn cat  /var/jenkins_home/secrets/initialAdminPassword -n devops
+kubectl cluster-info
