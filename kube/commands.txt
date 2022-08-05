@@ -1,0 +1,2 @@
+kubectl describe secret $(kubectl describe serviceaccount jenkins-admin --namespace=devops | grep Token | awk '{print $2}') --namespace=devops
+kubectl exec -it <pod_name> cat  /var/jenkins_home/secrets/initialAdminPassword -n devops
