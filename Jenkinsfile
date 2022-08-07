@@ -7,17 +7,22 @@ pipeline {
       defaultContainer 'maven'  // define a default container if more than a few stages use it, will default to jnlp container
     }
   }
+  environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub-cred')
+	}
   stages {
     stage('Build') {
-      steps {  // no container directive is needed as the maven container is the default
+      steps {  
         sh "mvn clean install"   
       }
     }
-    stage('Build Docker Image') {
+    stage('Build And Push Docker Image') {
       steps {
         container('docker') {  
-          sh "docker build -t hachemguetif/jenkins:dev ."  // when we run docker in this step, we're running it via a shell on the docker build-pod container, 
-          // sh "docker push hachemguetif/jenkins:dev"        // which is just connecting to the host docker deaemon
+          sh "docker build -t hachemguetif/jenkins:latest ."  
+          sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+          sh 'docker push hachemguetif/jenkins:latest'
+          sh 'docker logout'       
         }
       }
     }
